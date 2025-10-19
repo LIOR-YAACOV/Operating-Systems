@@ -28,6 +28,8 @@ def main():
     
     for process in processes:
         process.join()
+    
+    while not queue.empty():    
         total_number_of_chars += queue.get()
     
     print(f"Total number of chars downloaded is {total_number_of_chars}")
