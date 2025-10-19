@@ -2,14 +2,14 @@ import threading
 import json
 import requests
 
-NUMBER_OF_THREADS = 6
-COUNTERS = [0] * NUMBER_OF_THREADS
+NUMBER_OF_THREADS = 0
+COUNTERS = [0] 
 
 def downloader(url, thread_id):
     global COUNTERS
     response = requests.get(url).json()
     COUNTERS[thread_id] = len(json.dumps(response))
-    print(f"Process {thread_id} Downloaded {COUNTERS[thread_id]} from {url}")
+    print(f"Thread {thread_id} Downloaded {COUNTERS[thread_id]} from {url}")
     
 def main():
     urls = [
@@ -20,14 +20,17 @@ def main():
         "https://jsonplaceholder.typicode.com/todos",
         "https://jsonplaceholder.typicode.com/users"
     ]
-    
-    Threads = []
+    global NUMBER_OF_THREADS, COUNTERS
+    NUMBER_OF_THREADS = len(urls)
+    COUNTERS = [0] * NUMBER_OF_THREADS
+
+    threads = []
     for i, url in enumerate(urls):
         thread = threading.Thread(target=downloader, args=(url, i))
         thread.start()
-        Threads.append(thread)
+        threads.append(thread)
     
-    for thread in Threads:
+    for thread in threads:
         thread.join()
     
     total_number_of_chars = sum(COUNTERS)
